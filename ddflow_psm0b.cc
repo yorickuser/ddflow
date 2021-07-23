@@ -1040,8 +1040,7 @@ void g_action(void){
     if((Flag_out_phenotype==1)&&(step%phenotype_interval==0)){
             output_phenotype_exist();
     }
-    //        if(timen>10)g_Flag_halt=1;
-    
+    //        if(timen>10)g_Flag_halt=1;    
 }
  
 void g_put_data(void){ 
