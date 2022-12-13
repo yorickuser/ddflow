@@ -31,7 +31,7 @@
 library(simevol);
 
 
-ofile="ddflow_simevol1h";
+ofile="ddflow_simevol1";
 
 simsets=c("1_default",
           "2_default_robust",
