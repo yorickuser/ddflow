@@ -1,17 +1,16 @@
-## file ddflow_osm0d.R
+## file ddflow_osm1.R
 ## R program for simulation of DD-flows with OSM
-## (oligomorphic stochastic model, Ito and Dieckmann (2007, 2014)),
+## (oligomorphic stochastic model, Ito and Dieckmann (2014)),
 ## written by Hiroshi C. Ito 2021.
-## OSM was implemented following Ito and Sasaki (2020) as an R-package "simevol" (no documentation yet).
-
-## simevol can be downloaded (from my github account "yorickuser") and installed by using devtools.
+##
+## R-package "simevol" is required for this program.
+## This can be downloaded (from my github account "yorickuser") and installed by using devtools.
 ## library(devtools)
-## install_github('yorickuser/simevol@0.1.2')
+## install_github('yorickuser/simevol@0.1.1')
 ##
-## Eco-evolutionary setting can be chosen from the list in "simsets" (e.g., "3_K_sharp_peak" is selected by "setid=3").
-##
-## Execution method 1 (at R prompt): source("ddflow_osm0d.R")
-## Execution method 2 (at console): Rscript ddflow_osm0d.R setid=3
+## Eco-evolutionary setting can be chosen from the list in simsets (e.g., "3_K_sharp_peak" is selected by setid=3).
+## Execution method 1 (at R prompt): source("ddflow_osm1.R")
+## Execution method 2 (at console): Rscript ddflow_osm1.R setid=3
 
 
 
@@ -31,7 +30,8 @@
 
 library(simevol);
 
-ofile="ddflow";
+
+ofile="ddflow_simevol1h";
 
 simsets=c("1_default",
           "2_default_robust",
@@ -43,11 +43,14 @@ simsets=c("1_default",
           "8_kernel_leptokurtic",
           "9_kernel_asymetric",
           "10_mutation_y_rare",
-          "11_multiple_geographic_regions");
+          "11_multiple_geographic_regions",
+          "12_grady_avg",
+          "13_grady_saturation");
 
-runnames=c("1_def","2_defr","3_Ksharp","4_Kflat","5_Kbimod","6_gradyx","7_plat","8_lept","9_asym","10_yrare","11_geog");
+##runnames=c("1_def","2_defr","3_Ksharp","4_Kflat","5_Kbimod","6_gradyx","7_plat","8_lept","9_asym","10_yrare","11_geog");
+runnames=c("1_def","2_defr","3_Ksharp","4_Kflat","5_Kbimod","6_gradyx","7_plat","8_lept","9_asym","10_yrare","11_geog","12_grady_avg","13_grady_saturation");
 
-setid=1;
+setid=13;
 
 ##_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/##
 ##_/_/_/_/    Default eco-evolutionary settings           _/_/_/_/##
@@ -58,6 +61,7 @@ sK=1.0; ##sd of carrying capacity
 sa=0.15; ##sd of competition kernel
 sm=0.01; ##sd of mutation
 grady=0.1; ## fitness gradient for fundamental trait
+
 m_rate=1.0; ## mutation rate per unit population size
 seed=13; ## rundam seed
 x_init=-0.2; 
@@ -96,18 +100,19 @@ set_parms <-function(z,n){
 }
 
 pop_dynamics <- function(t,n,parms){
-    list(n*(grady*parms$z$y+1-rowSums(parms$ap%*%n)/parms$Kp));     
+    list(n*(grady*parms$z$y+1-rowSums(parms$ap%*%n)/parms$Kp));
+    
 }
 
 
 output <- function(timen,z,n){
-    options(scipen=100);
+     options(scipen=100);
     nspe=length(z[[1]]);
     cat(timen,nspe,"\n",file=a$file_data,append=TRUE);
     cat(a$phe$pid+1,"\n",file=a$file_data,append=TRUE);
     for(i in 1:nspe)cat(z$x[i],z$y[i],n[i],"\n",file=a$file_data,append=TRUE);
-    cat("\n",file=a$file_data,append=TRUE);
-    options(scipen=0);
+     cat("\n",file=a$file_data,append=TRUE);
+     options(scipen=0);
 }
 
 
@@ -117,7 +122,8 @@ halt_func <- function(){
 }
 
 z=list(x=c(x_init),y=c(y_init));
-n_init=K(x_init);
+##n_init=K(x_init);
+n_init=K(x_init)*0.9;
 n=c(n_init);en=n;
 
 ##_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/##
@@ -146,6 +152,40 @@ if(simsets[setid]=="2_default_robust"){
    n_init=K(x_init);
    n=c(n_init);en=n;
 }
+
+if(simsets[setid]=="12_grady_avg"){
+    cat("\nsimulation for ",simsets[setid],"\n");
+
+    grady=0.025; ## fitness gradient for fundamental trait
+    
+    fitness <-function(z1,z,n){
+        return(grady*(z1$y-sum(n*z$y)/sum(n))+1.0-sum(alpha(z$x,z1$x)*n)/K(z1$x));
+    }
+    
+    pop_dynamics <- function(t,n,parms){
+        list(n*(grady*(parms$z$y-sum(n*parms$z$y)/sum(n))+1-rowSums(parms$ap%*%n)/parms$Kp));     
+    }
+}
+
+if(simsets[setid]=="13_grady_saturation"){
+    cat("\nsimulation for ",simsets[setid],"\n");
+
+    gradyy <-function(y){
+        return (grady*y/(1+grady*y));
+    }
+
+    fitness <-function(z1,z,n){
+        return(gradyy(z1$y)+1.0-sum(alpha(z$x,z1$x)*n)/K(z1$x));
+    }
+    
+    pop_dynamics <- function(t,n,parms){
+        list(n*(gradyy(parms$z$y)+1-rowSums(parms$ap%*%n)/parms$Kp));     
+    }
+    
+    
+}
+
+
 
 if(simsets[setid]=="3_K_sharp_peak"){
     cat("\nsimulation for ",simsets[setid],"\n");
