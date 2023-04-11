@@ -1,27 +1,10 @@
 // file ddflow_psmb0b.cc
 // C++ program for simulation of DD-flows with PSM
 // (Polymorphic stochastic model, Dieckmann and Law (1996))
-// for sexual populations (see Ito and Dieckmann (2007)),
-// written by Hiroshi C. Ito 2021.
+// for sexual populations (see Ito and Dieckmann (2007)).
 //
-// X11 library is required for compilation.
-// Compilation: g++ ddflow_psm0b.cc -lX11 -L/usr/X11R6/lib  -lm -lstdc++
-// Execution (species-level output): ./a.out -u > data.dat
-// Execution (phenotype-level output): ./a.out -p > data.dat
-
-
-// copyright (C) 2021 Hiroshi C. Ito
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License Version 2 as 
-// published by the Free Software Foundation.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// A copy of the GNU General Public License is available at
-// http://www.r-project.org/Licenses/
+// Written by Hiroshi C. Ito (2021)
+// Email: hiroshibeetle@gmail.com
 
 #include <unistd.h>
 #include <stdlib.h>

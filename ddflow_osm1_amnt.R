@@ -1,31 +1,9 @@
 ## file ddflow_osm1.R
 ## R program for simulation of DD-flows with OSM
-## (oligomorphic stochastic model, Ito and Dieckmann (2014)),
-## written by Hiroshi C. Ito 2021.
+## (oligomorphic stochastic model, Ito and Dieckmann (2014)).
 ##
-## R-package "simevol" is required for this program.
-## This can be downloaded (from my github account "yorickuser") and installed by using devtools.
-## library(devtools)
-## install_github('yorickuser/simevol@0.1.1')
-##
-## Eco-evolutionary setting can be chosen from the list in simsets (e.g., "3_K_sharp_peak" is selected by setid=3).
-## Execution method 1 (at R prompt): source("ddflow_osm1.R")
-## Execution method 2 (at console): Rscript ddflow_osm1.R setid=3
-
-
-
-## copyright (C) 2021 Hiroshi C. Ito
-## This program is free software: you can redistribute it and/or modify
-## it under the terms of the GNU General Public License Version 2 as 
-## published by the Free Software Foundation.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-##
-## A copy of the GNU General Public License is available at
-## http://www.r-project.org/Licenses/
+## Written by Hiroshi C. Ito (2021)
+## Email: hiroshibeetle@gmail.com
 
 
 library(simevol);
@@ -47,10 +25,10 @@ simsets=c("1_default",
           "12_grady_avg",
           "13_grady_saturation");
 
-##runnames=c("1_def","2_defr","3_Ksharp","4_Kflat","5_Kbimod","6_gradyx","7_plat","8_lept","9_asym","10_yrare","11_geog");
+
 runnames=c("1_def","2_defr","3_Ksharp","4_Kflat","5_Kbimod","6_gradyx","7_plat","8_lept","9_asym","10_yrare","11_geog","12_grady_avg","13_grady_saturation");
 
-setid=13;
+setid=1;
 
 ##_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/##
 ##_/_/_/_/    Default eco-evolutionary settings           _/_/_/_/##
@@ -412,7 +390,7 @@ set.seed(seed);
 mydir=".simevol/";
 if(show_comwin==1)comwin(1,mydir=mydir);
 
-##.ee.set();
+
 simevol(z,en,fitness=fitness,
         mutate=mutate,
         fitness_contour=FALSE,
